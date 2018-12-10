@@ -1,8 +1,8 @@
 {
-  "name": "niem-tool-template-vue",
+  "name": "niem-specification-browser",
   "version": "1.0.0",
   "private": true,
-  "description": "",
+  "description": "Search rules and definitions from NIEM specifications.",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -17,8 +17,10 @@
     "bootstrap-vue": "^2.0.0-rc.11",
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
+    "niem-specification-utils-js": "github:cdmgtri/niem-specification-utils-js",
     "popper.js": "^1.14.5",
     "vue": "^2.5.17",
+    "vue-good-table": "^2.16.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },

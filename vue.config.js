@@ -1,6 +1,6 @@
 
 module.exports = {
-  baseUrl: '/niem-tool-template-vue/',
+  baseUrl: '/niem-specification-browser/',
   assetsDir: 'src/assets',
   devServer: {
     watchOptions: {

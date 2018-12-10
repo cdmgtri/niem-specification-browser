@@ -8,7 +8,7 @@
 
     <!-- Tool name -->
     <div id="site-name">
-      <router-link to="/" class="active">Tool Template</router-link>
+      <router-link to="/" class="active">Specification Browser</router-link>
     </div>
   </div>
 </template>

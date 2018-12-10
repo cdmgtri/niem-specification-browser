@@ -1,31 +1,19 @@
 
 # NIEM Tool Template
 
-This project provide a Vue project template to leverage for building a NIEM single-page application (SPA), hosted on GitHub Pages.
+Search rules and definitions from NIEM specifications.
 
-This template was developed using [Vue CLI 3](https://cli.vuejs.org/).
+See the full specifications at [https://reference.niem.gov/specification](https://reference.niem.gov/niem/specification/)
 
 ## Features
 
-- Vue SPA template
-- Vue router initialized
-- Vuex initialized (state management for sharing data across components)
-- NIEM website-style header and footer menu
-- Scripts to serve (with live-reloading), build, and deploy app
+- Uses parsed [rule](https://github.com/cdmgtri/niem-specification-utils-js/blob/dev/niem-rules.json) and [definition](https://github.com/cdmgtri/niem-specification-utils-js/blob/dev/niem-defs.json) files.
+- User interface supports keyword searches and result filtering.
 
-## Getting started
+## Tips
 
-Clone this project into a directory named appropriately for your project and make adjustments to the following files.
-
-| File | Steps |
-| ---- | ----- |
-| `package.json` | Update `name` and `description`. |
-| `vue.config.js` | Update `baseURL` to your GitHub repo name. |
-| `index.html` | Updated `title` to your app name. |
-| `src/components/HeaderBrand.vue` | Update "Tool Template" to your app name. |
-| `src/views/About.vue` | Update the repo name to report an issue. |
-| `src/scripts/git/push-dist.sh` | Updated the `origin` value to the name of your remote repo. |
-| `README.md` | Replace these instructions with a real README for your project. |
+- Click on table column headers to sort.
+- To sort on a secondary column, use `shift`-click.
 
 ## Usage
 

@@ -4,6 +4,7 @@
     <b-nav class="navbar-nav ml-auto">
 
       <b-nav-item :to="'/'" exact>Home</b-nav-item>
+      <b-nav-item :to="'/rules'" exact>Rules</b-nav-item>
 
       <b-nav-item-dropdown text="Help">
         <b-nav-item :to="'/about'">About</b-nav-item>
