@@ -11,51 +11,50 @@ let rules = rulesImport;
 let defs = defsImport;
 
 /**
- * Returns the NIEM rules JSON data.
- *
- * @returns {NIEMRuleType[]}
- */
-function getRules() {
-  rules.forEach( rule => {
-    if (rule.specification.version === "CodeLists-4.0") {
-      rule.specification.version = "CL-4.0";
-    }
-  })
-  return rules;
-}
-
-/**
- * Returns the NIEM definitions JSON data.
- *
- * @returns {NIEMDefinitionType[]}
- */
-function getDefs() {
-  return defs;
-}
-
-/**
  * Returns a string array of supported NIEM releases for rules.
  * @returns {string[]}
  */
-function getRulesAvailableNIEM() {
+function getRulesAvailableReleases() {
   let niem = [];
   rules.forEach( rule => niem.push(...rule.specification.niem));
   return [...new Set(niem)];
+}
+
+function getRulesAvailableSpecs() {
+  let specs = [];
+  rules.forEach( rule => specs.push(rule.specification.version));
+  return [...new Set(specs)];
+}
+
+function getRuleAvailableTargets() {
+  let targets = [];
+  rules.forEach( rule => targets.push(...rule.applicability));
+  return [...new Set(targets)];
 }
 
 /**
  * Returns a string array of supported NIEM releases for definitions.
  * @returns {string[]}
  */
-function getDefsAvailableNIEM() {
+function getDefsAvailableReleases() {
   let niem = [];
   defs.forEach( def => niem.push(...def.specification.niem));
   return [...new Set(niem)];
 }
 
+let ruleMetadata = {
+  availableReleases: getRulesAvailableReleases(),
+  availableSpecs: getRulesAvailableSpecs(),
+  availableTargets: getRuleAvailableTargets()
+};
+
+let defMetadata = {
+  availableReleases: getDefsAvailableReleases()
+};
+
 export {
-  getRules,
-  getDefs,
-  getRulesAvailableNIEM,
-  getDefsAvailableNIEM
+  rules,
+  defs,
+  ruleMetadata,
+  defMetadata
 };

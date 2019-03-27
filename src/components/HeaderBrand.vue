@@ -26,8 +26,12 @@ export default {
   vertical-align: middle;
   font-size: 1.8em;
   font-weight: 900;
-  padding: 16px 0px;
+  padding: 16px 0;
   position: relative
+}
+
+.navbar-brand {
+  padding-left: 0;
 }
 
 </style>
