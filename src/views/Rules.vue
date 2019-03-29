@@ -29,16 +29,17 @@
           />
 
           <label for="selectExclusive" class="selectLabel"
-            title="Check box for an exclusive match on the conformance target, e.g., 'EXT' rules only. Uncheck if results can also match additional conformance targets, e.g., 'REF' and 'EXT'."
+            title="Check box for an exclusive match on the conformance target, e.g., 'EXT' rules only. Uncheck if results can also match additional conformance targets, e.g., 'REF, EXT'."
             >Exclusive?
           </label>
           <input id="selectExclusive" type="checkbox" v-model="selectedExclusive"/>
-          <!-- <b-form-checkbox id="selectExclusive" size="sm"
-            v-model="selectedExclusive" value="true" unchecked-value="false"
-            title="Check box for an exclusive match on the conformance target, e.g., 'EXT' rules only. Uncheck if results can also match additional conformance targets, e.g., 'REF' and 'EXT'."
-            >
-            Exclusive?
-          </b-form-checkbox> -->
+
+          <label for="selectStyle" class="selectLabel">Style: </label>
+          <b-form-select id="selectStyle" size="sm"
+            v-model="selectedStyle"
+            :options="compatibleStyles"
+          />
+
         </div>
       </b-col>
     </b-row>
@@ -47,29 +48,66 @@
       <small>Results: {{ resultRules.length }}</small>
     </b-row>
 
+    <b-table striped hover bordered
+      :items="resultRules"
+      :fields="fields"
+    >
 
-    <vue-good-table
-      :columns="columns"
-      :rows="resultRules"
-      :fixed-header="true"
-      :search-options="{
-        enabled: true,
-        skipDiacritics: true,
-        placeholder: 'Search'
-      }"
-      :sort-options="{
-        enabled: true
-      }"
-      >
-    </vue-good-table>
+      <!-- Buttons to display more info below and to open IEPD -->
+      <template slot="details" slot-scope="row">
+        <div class="btn-group">
+
+          <!-- Button to display more info -->
+          <button class="btn btn-outline-secondary btn-sm" @click.stop="row.toggleDetails">
+            <i v-if="!row.detailsShowing" class="fa fa-chevron-circle-down"/>
+            <i v-else class="fa fa-chevron-circle-up"/>
+          </button>
+
+        </div>
+      </template>
+
+      <!-- Additional IEPD metadata for row -->
+      <template slot="row-details" slot-scope="row">
+
+        <p>
+          <strong>
+            <a :href="row.item.link" target="_blank">Rule {{ row.item.number }}</a>
+          </strong>
+          ({{ row.item.applicability.join(", ") }})
+          ({{ row.item.classification }})
+        </p>
+
+        <p><strong>{{ row.item.text }}</strong></p>
+
+        <p>
+          Specification:
+          <a :href="row.item.specification.link" target="_blank">
+            {{ row.item.specification.name }},
+            version {{ row.item.specification.versionLabel}}
+          </a>
+          <br/>
+          Section:
+          <a :href="row.item.section.link" target="_blank">
+            {{ row.item.section.name }}
+          </a>
+        </p>
+
+        <p v-if="row.item.schematron">
+          Schematron:
+          <pre lang="xml"><code>{{ formatXML(row.item.schematron) }}</code></pre>
+        </p>
+
+      </template>
+
+    </b-table>
 
   </div>
 </template>
 
 <script>
 
+import vkbeautify from "vkbeautify";
 import * as data from "../scripts/data.js";
-import { NIEMRuleType,  NIEMRule} from "../assets/typedefs/index.js";
 
 function formatApplicability(arr) {
   return arr.join(", ");
@@ -92,12 +130,14 @@ export default {
       selectedSpec: "NDR",
       selectedTarget: "(all)",
       selectedExclusive: false,
-      columns: [
-        { label: "Spec", field: "specification.version" },
-        { label: "Rule", field: "number", sortFn: sortRuleNumber },
-        { label: "Target", field: "applicability", formatFn: formatApplicability },
-        { label: "Title", field: "title" },
-        // "Details"
+      selectedStyle: "",
+      fields: [
+        { label: "Spec", key: "specification.version", sortable: true },
+        { label: "Rule", key: "number", sortFn: sortRuleNumber, sortable: true },
+        { label: "Target", key: "applicability", formatter: formatApplicability, sortable: true },
+        { label: "Style", key: "style", sortable: true },
+        { label: "Title", key: "title", sortable: true },
+        { label: "Details", key: "details" }
       ]
     }
   },
@@ -125,7 +165,6 @@ export default {
       return [...new Set(specs)];
     },
 
-
     /**
      * NIEM rules compatible with the user-selected release and specification.
      */
@@ -141,7 +180,6 @@ export default {
       this.specRules.forEach( rule => targets.push(...rule.applicability));
       return [...new Set(targets)].sort();
     },
-
 
     /**
      * NIEM rules compatible with the user-selected release, spec, and conformance target.
@@ -160,11 +198,25 @@ export default {
       return this.specRules.filter( rule => rule.applicability.includes(this.selectedTarget));
     },
 
+    compatibleStyles() {
+      let styles = [];
+      this.targetRules.forEach( rule => styles.push(rule.style) );
+      return [...new Set(styles)].sort();
+    },
+
     /**
      * NIEM rules compatible with the user-selected release, spec, conformance target, and search terms.
     */
     resultRules () {
-      return this.targetRules;
+      if (this.selectedStyle === "(all)" || this.selectedStyle ==="" ) {
+        return this.targetRules;
+      }
+      return this.targetRules.filter( rule => rule.style === this.selectedStyle);
+    }
+  },
+  methods: {
+    formatXML: (schematron) => {
+      return vkbeautify.xml(schematron, 2);
     }
   },
   created() {
@@ -212,6 +264,17 @@ small {
 
 input[type="checkbox"] {
   vertical-align:middle;
+}
+
+pre {
+  border: 1px solid gainsboro;
+  padding: 10px;
+
+  white-space: pre-wrap;       /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
 </style>

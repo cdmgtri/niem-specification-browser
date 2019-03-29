@@ -13,13 +13,9 @@ import "./assets/styles/main.css";
 import "./assets/styles/main.scss";
 import "./assets/styles/navbar.css";
 
-import VueGoodTablePlugin from "vue-good-table";
-import "vue-good-table/dist/vue-good-table.css";
-
 Vue.config.productionTip = false;
 
 Vue.use(BootstrapVue);
-Vue.use(VueGoodTablePlugin);
 
 new Vue({
   router,
