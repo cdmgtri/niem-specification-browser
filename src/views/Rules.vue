@@ -16,42 +16,42 @@
             :options="ruleMetadata.availableReleases"
           />
 
-          <label for="selectSpec" class="selectLabel">Specification: </label>
-          <b-form-select id="selectSpec" size="sm"
-            v-model="selectedSpec"
-            :options="compatibleSpecs"
-          />
-
-          <label for="selectTarget" class="selectLabel">Target: </label>
-          <b-form-select id="selectTarget" size="sm"
-            v-model="selectedTarget"
-            :options="compatibleTargets"
-          />
-
           <label for="selectExclusive" class="selectLabel"
             title="Check box for an exclusive match on the conformance target, e.g., 'EXT' rules only. Uncheck if results can also match additional conformance targets, e.g., 'REF, EXT'."
             >Exclusive?
           </label>
           <input id="selectExclusive" type="checkbox" v-model="selectedExclusive"/>
-
-          <label for="selectStyle" class="selectLabel">Style: </label>
-          <b-form-select id="selectStyle" size="sm"
-            v-model="selectedStyle"
-            :options="compatibleStyles"
-          />
-
         </div>
       </b-col>
     </b-row>
 
     <b-row>
-      <small>Results: {{ resultRules.length }}</small>
+      <small>Results: {{ filteredRules.length }}</small>
     </b-row>
 
-    <b-table striped hover bordered
-      :items="resultRules"
-      :fields="fields"
-    >
+    <b-table striped hover bordered :items="filteredRules" :fields="fields">
+
+      <!-- eslint-disable-next-line vue/no-unused-vars -->
+      <template slot="top-row" slot-scope="{ fields }">
+        <td key="specification.version">
+          <b-form-select size="sm" v-model="selectedSpec" :options="compatibleSpecs"/>
+        </td>
+        <td/>  <!-- Rule number -->
+        <td key="applicability">
+          <b-form-select size="sm" v-model="selectedTarget" :options="compatibleTargets"/>
+        </td>
+        <td key="style">
+          <b-form-select size="sm" v-model="selectedStyle" :options="compatibleStyles"/>
+        </td>
+        <td>
+          <b-input-group>
+            <b-form-input size="sm" v-model="selectedKeywords" placeholder="Search rule titles and text"/>
+            <b-button-close @click="selectedKeywords=null"/>
+          </b-input-group>
+        </td>
+        <td/>  <!-- Details -->
+
+      </template>
 
       <!-- Buttons to display more info below and to open IEPD -->
       <template slot="details" slot-scope="row">
@@ -131,12 +131,13 @@ export default {
       selectedTarget: "(all)",
       selectedExclusive: false,
       selectedStyle: "",
+      selectedKeywords: null,
       fields: [
-        { label: "Spec", key: "specification.version", sortable: true },
-        { label: "Rule", key: "number", sortFn: sortRuleNumber, sortable: true },
-        { label: "Target", key: "applicability", formatter: formatApplicability, sortable: true },
-        { label: "Style", key: "style", sortable: true },
-        { label: "Title", key: "title", sortable: true },
+        { label: "Spec", key: "specification.version" },
+        { label: "Rule", key: "number", sortFn: sortRuleNumber },
+        { label: "Target", key: "applicability", formatter: formatApplicability },
+        { label: "Style", key: "style" },
+        { label: "Title", key: "title" },
         { label: "Details", key: "details" }
       ]
     }
@@ -207,11 +208,27 @@ export default {
     /**
      * NIEM rules compatible with the user-selected release, spec, conformance target, and search terms.
     */
-    resultRules () {
+    resultRules() {
       if (this.selectedStyle === "(all)" || this.selectedStyle ==="" ) {
         return this.targetRules;
       }
       return this.targetRules.filter( rule => rule.style === this.selectedStyle);
+    },
+
+    keywords() {
+      if (! this.selectedKeywords) {
+        return [];
+      }
+      return this.selectedKeywords.split(" ");
+    },
+
+    filteredRules() {
+      if (! this.keywords) {
+        return this.resultRules();
+      }
+      return this.resultRules.filter( rule => {
+        return this.keywords.every( keyword => rule.title.includes(keyword));
+      });
     }
   },
   methods: {
