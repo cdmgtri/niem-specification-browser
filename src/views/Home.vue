@@ -16,7 +16,6 @@
       <li><a target="_blank" href="https://reference.niem.gov/niem/specification/naming-and-design-rules/4.0/niem-ndr-4.0.html">NDR 4.0</a></li>
     </ul>
 
-
     <h3>NIEM Model Package Description (MPD) Specification</h3>
 
     <p>Specifies normative rules and non-normative guidance for building NIEM information exchange messages. It defines IEPD artifacts like subset schemas, extension schemas, and MPD catalogs; and recommends how the package should be structured.</p>
