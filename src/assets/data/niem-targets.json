@@ -1,0 +1,78 @@
+[
+  {
+    "id": "REF",
+    "name": "reference schema document",
+    "definition": "A schema document that is intended to provide the authoritative definitions of broadly reusable schema components.",
+    "link": "https://reference.niem.gov/niem/specification/naming-and-design-rules/4.0/niem-ndr-4.0.html#definition_reference_schema_document",
+    "specification": {
+      "id": "NDR",
+      "name": "Naming and Design Rules",
+      "version": "NDR-4.0",
+      "versionLabel": "4.0",
+      "current": true,
+      "niem": [
+        "4.0",
+        "4.1",
+        "4.2"
+      ],
+      "link": "https://reference.niem.gov/niem/specification/naming-and-design-rules/4.0/niem-ndr-4.0.html"
+    }
+  },
+  {
+    "id": "EXT",
+    "name": "extension schema document",
+    "definition": "A schema document that is intended to provide definitions of schema components that are intended for reuse within a more narrow scope than those defined by a reference schema document.",
+    "link": "https://reference.niem.gov/niem/specification/naming-and-design-rules/4.0/niem-ndr-4.0.html#definition_extension_schema_document",
+    "specification": {
+      "id": "NDR",
+      "name": "Naming and Design Rules",
+      "version": "NDR-4.0",
+      "versionLabel": "4.0",
+      "current": true,
+      "niem": [
+        "4.0",
+        "4.1",
+        "4.2"
+      ],
+      "link": "https://reference.niem.gov/niem/specification/naming-and-design-rules/4.0/niem-ndr-4.0.html"
+    }
+  },
+  {
+    "id": "SET",
+    "name": "conformant schema document set",
+    "definition": "A collection of schema documents that together are capable of validating a conformant instance XML document.",
+    "link": "https://reference.niem.gov/niem/specification/naming-and-design-rules/4.0/niem-ndr-4.0.html#definition_conformant_schema_document_set",
+    "specification": {
+      "id": "NDR",
+      "name": "Naming and Design Rules",
+      "version": "NDR-4.0",
+      "versionLabel": "4.0",
+      "current": true,
+      "niem": [
+        "4.0",
+        "4.1",
+        "4.2"
+      ],
+      "link": "https://reference.niem.gov/niem/specification/naming-and-design-rules/4.0/niem-ndr-4.0.html"
+    }
+  },
+  {
+    "id": "INS",
+    "name": "conformant instance XML document",
+    "definition": "An XML document that is instance document valid to a conformant schema document set.",
+    "link": "https://reference.niem.gov/niem/specification/naming-and-design-rules/4.0/niem-ndr-4.0.html#definition_conformant_instance_XML_document",
+    "specification": {
+      "id": "NDR",
+      "name": "Naming and Design Rules",
+      "version": "NDR-4.0",
+      "versionLabel": "4.0",
+      "current": true,
+      "niem": [
+        "4.0",
+        "4.1",
+        "4.2"
+      ],
+      "link": "https://reference.niem.gov/niem/specification/naming-and-design-rules/4.0/niem-ndr-4.0.html"
+    }
+  }
+]

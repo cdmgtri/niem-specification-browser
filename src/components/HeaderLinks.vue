@@ -5,6 +5,9 @@
 
       <b-nav-item :to="'/'" exact>Home</b-nav-item>
       <b-nav-item :to="'/rules'" exact>Rules</b-nav-item>
+      <b-nav-item :to="'/definitions'" exact disabled>Definitions</b-nav-item>
+      <b-nav-item :to="'/sections'" exact disabled>Sections</b-nav-item>
+      <b-nav-item :to="'/targets'" exact>Targets</b-nav-item>
 
       <b-nav-item-dropdown text="Help">
         <b-nav-item :to="'/about'">About</b-nav-item>
