@@ -9,23 +9,19 @@
       </b-col>
 
       <b-col sm="9">
+        <!-- Drop-down to select NIEM Release -->
         <div class="form-group form-inline" id="selectedNIEMGroup">
           <label for="selectNIEM" class="selectLabel">NIEM release: </label>
           <b-form-select id="selectNIEM" size="sm"
             v-model="selectedRelease"
             :options="ruleMetadata.availableReleases"
           />
-
-          <label for="selectExclusive" class="selectLabel"
-            title="Check box for an exclusive match on the conformance target, e.g., 'EXT' rules only. Uncheck if results can also match additional conformance targets, e.g., 'REF, EXT'."
-            >Exclusive?
-          </label>
-          <input id="selectExclusive" type="checkbox" v-model="selectedExclusive"/>
         </div>
       </b-col>
     </b-row>
 
     <b-row>
+      <!-- Results count -->
       <small>Results: {{ filteredRules.length }}</small>
     </b-row>
 
@@ -34,18 +30,31 @@
       <!-- eslint-disable-next-line vue/no-unused-vars -->
       <template slot="top-row" slot-scope="{ fields }">
         <td key="specification.version">
+          <!-- Filter specifications -->
           <b-form-select size="sm" v-model="selectedSpec" :options="compatibleSpecs"/>
         </td>
+
         <td/>  <!-- Rule number -->
+
         <td key="applicability">
+          <!-- Filter conformance targets -->
           <b-form-select size="sm" v-model="selectedTarget" :options="compatibleTargets"/>
+
+          <b-form-checkbox v-model="selectedExclusive" switch small
+            title="Check the box for an exclusive match on the conformance target, (like 'EXT' rules only). Uncheck the box if the results can also match additional conformance targets (like 'REF, EXT').">
+            Exclusive?
+          </b-form-checkbox>
         </td>
+
         <td key="style">
+          <!-- Filter rule styles (text vs schematron) -->
           <b-form-select size="sm" v-model="selectedStyle" :options="compatibleStyles"/>
         </td>
+
         <td>
+          <!-- Keyword search -->
           <b-input-group>
-            <b-form-input size="sm" v-model="selectedKeywords" placeholder="Search rule titles and text"/>
+            <b-form-input size="sm" v-model="selectedKeywords" placeholder="Search rules"/>
             <b-button-close @click="selectedKeywords=null"/>
           </b-input-group>
         </td>
@@ -292,6 +301,10 @@ pre {
   white-space: -pre-wrap;      /* Opera 4-6 */
   white-space: -o-pre-wrap;    /* Opera 7 */
   word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.tooltip-inner {
+  white-space: pre-line;
 }
 
 </style>
