@@ -1,116 +1,66 @@
 
 <template>
-  <div>
-
-    <b-row id="tableHeaderRow">
-
+    <b-row>
       <b-col sm="3">
         <h2>Search NIEM Rules</h2>
-      </b-col>
 
-      <b-col sm="9">
-        <!-- Drop-down to select NIEM Release -->
-        <div class="form-group form-inline" id="selectedNIEMGroup">
-          <label for="selectNIEM" class="selectLabel">NIEM release: </label>
-          <b-form-select id="selectNIEM" size="sm"
-            v-model="selectedRelease"
-            :options="ruleMetadata.availableReleases"
+        <!-- Choose NIEM release -->
+        <!-- <div class="form-group form-inline" id="selectedNIEMGroup"> -->
+          <label for="selectNIEM" id="selectedNIEMLabel">NIEM release:</label>
+          <b-form-select
+            id="selectNIEM" size="sm"
+            v-model="selectedNIEM"
+            :options="availableNIEM"
           />
-        </div>
+        <!-- </div> -->
+
+        <!-- Choose Spec -->
+        <label for="selectSpec">Specification:</label>
+        <b-form-select id="selectSpec" v-model="selectedSpec" :options="compatibleSpecVersions" :select-size="compatibleSpecVersions.length"/>
+
+        <!-- Choose Applicability -->
+        <label for="selectTarget">Conformance Target:</label>
+        <b-form-select id="selectTarget" v-model="selectedTarget" :options="compatibleApplicability" :select-size="compatibleApplicability.length"/>
+
+
+
+      </b-col>
+      <b-col sm="9">
+        <h2>Results</h2>
+      <b-table
+        striped hover
+        :items="compatibleRules"
+        :fields="fields"
+        :current-page="currentPage"
+        :per-page="perPage"
+        />
       </b-col>
     </b-row>
 
-    <b-row>
-      <!-- Results count -->
-      <small>Results: {{ filteredRules.length }}</small>
-    </b-row>
+    <!-- <b-table
+      striped hover
+      :items="compatibleRules"
+      :fields="fields"
+      :current-page="currentPage"
+      :per-page="perPage"
 
-    <b-table striped hover bordered :items="filteredRules" :fields="fields">
+      >
 
-      <!-- eslint-disable-next-line vue/no-unused-vars -->
-      <template slot="top-row" slot-scope="{ fields }">
-        <td key="specification.version">
-          <!-- Filter specifications -->
-          <b-form-select size="sm" v-model="selectedSpec" :options="compatibleSpecs"/>
-        </td>
-
-        <td/>  <!-- Rule number -->
-
-        <td key="applicability">
-          <!-- Filter conformance targets -->
-          <b-form-select size="sm" v-model="selectedTarget" :options="compatibleTargets"/>
-
-          <b-form-checkbox v-model="selectedExclusive" switch small
-            title="Check the box for an exclusive match on the conformance target, (like 'EXT' rules only). Uncheck the box if the results can also match additional conformance targets (like 'REF, EXT').">
-            Exclusive?
-          </b-form-checkbox>
-        </td>
-
-        <td key="style">
-          <!-- Filter rule styles (text vs schematron) -->
-          <b-form-select size="sm" v-model="selectedStyle" :options="compatibleStyles"/>
-        </td>
-
-        <td>
-          <!-- Keyword search -->
-          <b-input-group>
-            <b-form-input size="sm" v-model="selectedKeywords" placeholder="Search rules"/>
-            <b-button-close @click="selectedKeywords=null"/>
-          </b-input-group>
-        </td>
-        <td/>  <!-- Details -->
-
-      </template>
-
-      <!-- Buttons to display more info below and to open IEPD -->
       <template slot="details" slot-scope="row">
-        <div class="btn-group">
-
-          <!-- Button to display more info -->
-          <button class="btn btn-outline-secondary btn-sm" @click.stop="row.toggleDetails">
-            <i v-if="!row.detailsShowing" class="fa fa-chevron-circle-down"/>
-            <i v-else class="fa fa-chevron-circle-up"/>
-          </button>
-
-        </div>
+        <b-button size="sm" @click="row.toggleDetails" class="mr-2">
+          {{ row.detailsShowing ? "Hide" : "Show" }} Details
+        </b-button>
       </template>
 
-      <!-- Additional IEPD metadata for row -->
-      <template slot="row-details" slot-scope="row">
-
-        <p>
-          <strong>
-            <a :href="row.item.link" target="_blank">Rule {{ row.item.number }}</a>
-          </strong>
-          ({{ row.item.applicability.join(", ") }})
-          ({{ row.item.classification }})
-        </p>
-
-        <p><strong>{{ row.item.text }}</strong></p>
-
-        <p>
-          Specification:
-          <a :href="row.item.specification.link" target="_blank">
-            {{ row.item.specification.name }},
-            version {{ row.item.specification.versionLabel}}
-          </a>
-          <br/>
-          Section:
-          <a :href="row.item.section.link" target="_blank">
-            {{ row.item.section.name }}
-          </a>
-        </p>
-
-        <p v-if="row.item.schematron">
-          Schematron:
-          <pre lang="xml"><code>{{ formatXML(row.item.schematron) }}</code></pre>
-        </p>
-
+      <template slot="details" slot-scope="row">
+        <p>{{ row.title }}</p>
       </template>
+    </b-table> -->
 
-    </b-table>
 
-  </div>
+    <!-- Pagination -->
+    <!-- <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" align="center"/> -->
+
 </template>
 
 <script>
@@ -133,22 +83,24 @@ export default {
 
   data() {
     return {
-      allRules: data.rules,
-      ruleMetadata: data.ruleMetadata,
-      selectedRelease: "4.1",
-      selectedSpec: "NDR",
-      selectedTarget: "(all)",
-      selectedExclusive: false,
-      selectedStyle: "",
-      selectedKeywords: null,
+      selectedSpec:  "",
+      specs: [
+        "NDR", "MPD", "CodeLists"
+      ],
+      selectedTarget: "",
+      allRules: data.getRules(),
+      availableNIEM: data.getRulesAvailableNIEM(),
+      selectedNIEM: "4.1",
       fields: [
-        { label: "Spec", key: "specification.version" },
-        { label: "Rule", key: "number", sortFn: sortRuleNumber },
-        { label: "Target", key: "applicability", formatter: formatApplicability },
-        { label: "Style", key: "style" },
-        { label: "Title", key: "title" },
-        { label: "Details", key: "details" }
-      ]
+        { label: "Spec", key: "specification.version", sortable: true },
+        { label: "Number", key: "number", sortable: true },
+        { label: "Applicability", key: "applicability", sortable: true },
+        { label: "Title", key: "title", sortable: true },
+        "details"
+      ],
+      // currentPage: 1,
+      // perPage: 50,
+      // totalRows: this.compatibleRules.length
     }
   },
   computed: {
